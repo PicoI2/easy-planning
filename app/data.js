@@ -11,5 +11,16 @@ angular.module("dataModule", []).factory('$data', ["$http", "$timeout", function
         });
     };
 
+    me.setTasks = (tasks) => {
+        $http.post('/task', tasks).then(
+            function success(rep) {
+                console.log("post task success" + rep);
+            },
+            function error(rep) {
+                console.log("post task error" + rep);
+            },
+        );
+    };
+
     return me;
 }]);

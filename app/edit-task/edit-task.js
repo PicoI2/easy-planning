@@ -10,6 +10,11 @@ function EditTaskCtrl ($data, $timeout) {
         me.tasks.push({});
     });
 
+    // Save task list
+    me.save = () => {
+        $data.setTasks(me.tasks);
+    }
+
     // Get an event when something is paste into the cell.
     me.paste = (event) => {
         var taskKey = parseInt(event.target.attributes["task-key"].value);

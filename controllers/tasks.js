@@ -1,3 +1,5 @@
+'use strict'
+
 var express = require('express');
 var router = express.Router();
 const sequelize = require('../database');
@@ -12,17 +14,35 @@ router.get('/', (req, res, next) => {
     });
 });
 
-// Create a task
-router.put('/', (req, res, next) => {
+// Receive list of tasks
+router.post('/', (req, res, next) => {
     console.log(req.body);
-    if (req.body.title) {
-        Task.create(req.body)
-            .then(() => { res.sendStatus(200); })
-            .catch(error => { res.sendStatus(400);});
+    var promList = [];
+    var tasks = req.body;
+    var retStatus = 200;
+    for (var it in tasks) {
+        var task = tasks[it];
+        if (0 < task.id) {
+            var prom = Task.update(task, {where: {id: task.id}})
+                .catch(error => {
+                    console.log("error task update : " + error)
+                    retStatus = 400;
+                });
+            promList.push(prom);
+        }
+        else if (task.title) {
+            var prom = Task.create(task)
+                .catch(error => {
+                    console.log("error task create : " + error)
+                    retStatus = 400;
+                });
+            promList.push(prom);
+        }
     }
-    else {
-        res.sendStatus(400);
-    }
+    Promise.all(promList).then(()=>{
+        console.log("End promise.all");
+        res.sendStatus(retStatus);
+    });
 });
 
 // Delete a task
