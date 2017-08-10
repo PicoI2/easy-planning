@@ -1,5 +1,6 @@
 const express = require('express');
 var serveIndex = require('serve-index');
+var bodyParser  = require('body-parser');
 const app = express();
 
 // With theses lines, webpack will run at each file saving.
@@ -10,8 +11,13 @@ webpackConfig.output.path = '/';
 const compiler = webpack(webpackConfig);
 app.use('/app/wpk/', webpackDevMiddleware(compiler, {}));
 
-// Serve static files
-app.use(express.static('.'));
+// Add parse of request
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+
+// route /task to tasks controller
+var tasks = require("./controllers/tasks");
+app.use('/task', tasks);
 
 // Function called when others failed
 app.use(function(req, res, next) {
