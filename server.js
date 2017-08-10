@@ -15,6 +15,9 @@ app.use('/app/wpk/', webpackDevMiddleware(compiler, {}));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
+// Serve static files
+app.use(express.static('.'));
+
 // route /task to tasks controller
 var tasks = require("./controllers/tasks");
 app.use('/task', tasks);

@@ -1,0 +1,4 @@
+<h2>Edit the list of your tasks :</h2>
+<div ng-repeat="(key, task) in ctrl.tasks">
+    <input task-key="{{key}}" type="text" ng-model="task.title" ng-paste="ctrl.paste($event)"><input type="number" ng-model="task.leftTodo">
+</div>
