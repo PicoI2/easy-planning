@@ -1,0 +1,19 @@
+<h2>Planning :</h2>
+<table>
+    <tr>
+        <th class="task-column">Task</th>
+        <th ng-repeat="day in ctrl.days" class="{{!(day.getDay()%6) ? 'we-column' : ''}}"
+            >{{day | date : 'd'}}<br>{{day | date : 'M'}}</th>
+    </tr>
+    <tr>
+        <td>Load</td>
+        <td ng-repeat="load in ctrl.loads track by $index" >{{load | number:2}}</td>
+    </tr>
+    <tr ng-repeat="(keyTask, task) in ctrl.tasks">
+        <td>{{task.title + " - " + task.leftTodo}}</td>
+        <th ng-repeat="(keyDay, day) in ctrl.days"
+            style="{{ctrl.table[keyTask][keyDay].color}}"
+            draggable-task
+            ></th>
+    </tr>
+</table>

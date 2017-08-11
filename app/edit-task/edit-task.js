@@ -1,19 +1,18 @@
 'use strict'
 import 'angular';
 
-function EditTaskCtrl ($data, $timeout) {
+function EditTaskCtrl ($data, $timeout, $rootScope) {
     var me = this;
-    me.name = $data.name;
-    me.tasks = [{title:"Loading tasks..."}];
-    $data.getTasks().then((data) => {
-        me.tasks = data;
-        me.tasks.push({});
+    me.tasks = $data.tasks;
+    
+    $rootScope.$on('dataGetTask', () => {
+        me.tasks = $data.tasks;
     });
-
+    
     // Save task list
     me.save = () => {
-        $data.setTasks(me.tasks);
-    }
+        $data.saveTasks();
+    };
 
     // Get an event when something is paste into the cell.
     me.paste = (event) => {
@@ -46,7 +45,7 @@ function EditTaskCtrl ($data, $timeout) {
         }, 0);
     };
 }
-EditTaskCtrl.$inject = ["$data", "$timeout"];
+EditTaskCtrl.$inject = ["$data", "$timeout", "$rootScope"];
 
 angular.module('editTask', []).component('editTask', {
     restrict: 'E',

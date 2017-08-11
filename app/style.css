@@ -1,0 +1,19 @@
+table {
+    table-layout: fixed;
+    width: 6000px;
+}
+
+table, th, td {
+    border-collapse: collapse;
+    border: 1px solid black;
+    width: 28px;
+}
+
+.task-column {
+    width: 300px;
+}
+
+.we-column {
+    width: 14px;
+    background-color: grey;
+}

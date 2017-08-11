@@ -31,6 +31,13 @@ router.post('/', (req, res, next) => {
             promList.push(prom);
         }
         else if (task.title) {
+            if (!task.start) {
+                task.start = new Date();
+            }
+            if (!task.end) {
+                task.end = new Date();
+                task.end.setDate(task.start.getDate() + 15);
+            }
             var prom = Task.create(task)
                 .catch(error => {
                     console.log("error task create : " + error)
