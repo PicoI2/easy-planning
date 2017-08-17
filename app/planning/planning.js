@@ -99,7 +99,9 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
         }
         else {
             me.draggedTask.start.setTime(me.draggedTask.start.getTime() + day.day.getTime() - me.draggedDay.day.getTime());
+            me.draggedTask.start.setHours(0,0,0,0);
             me.draggedTask.end.setTime(me.draggedTask.end.getTime() + day.day.getTime() - me.draggedDay.day.getTime());
+            me.draggedTask.end.setHours(0,0,0,0);
             me.draggedDay = day;
         }
     }
