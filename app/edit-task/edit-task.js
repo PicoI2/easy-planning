@@ -5,13 +5,14 @@ function EditTaskCtrl ($data, $timeout, $rootScope) {
     var me = this;
     me.tasks = $data.tasks;
     
-    $rootScope.$on('dataGetTask', () => {
+    $rootScope.$on('dataGetTasks', () => {
         me.tasks = $data.tasks;
     });
     
     // Save task list
     me.save = () => {
         $data.saveTasks();
+        $rootScope.$emit('dataGetTasks');
     };
 
     // Get an event when something is paste into the cell.
@@ -43,6 +44,29 @@ function EditTaskCtrl ($data, $timeout, $rootScope) {
         $timeout(()=>{
             me.tasks[taskKey].title = taskTitle;
         }, 0);
+    };
+
+    me.addTask = () => {
+        if (me.tasks.length > 0) {
+            var lastTask = JSON.parse(JSON.stringify(me.tasks[me.tasks.length-1]));
+            me.tasks.push({
+                title: '',
+                leftTodo: lastTask.leftTodo,
+                start: lastTask.start,
+                end: lastTask.end,
+            });
+        }
+        else {
+            var startDate = new Date(2017,8,1,0,0,0,0); // 1 sept !
+            var endDate = new Date(2017,8,3,0,0,0,0); // 2 sept !
+            me.tasks.push({
+                title: '',
+                leftTodo: 3,
+                start: startDate,
+                end: endDate
+            });
+        }
+        
     };
 }
 EditTaskCtrl.$inject = ["$data", "$timeout", "$rootScope"];

@@ -8,29 +8,34 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
     var me = this;
     me.name = "PlanningCtrl";
     me.tasks = $data.tasks;
-    me.days = [];
-    me.loads = [];
+    me.days = $data.days;
     me.table = [[]];
-    var date = new Date(2017,8,1,0,0,0,0); // 1 sept !
-    me.days.push(date);
-    for (var i=1; i<123; ++i) {
-        me.days.push(new Date(date.getTime() + i*DAY));
-    }
-    me.loads = new Array(me.days.length);
     
-    $rootScope.$on('dataGetTask', () => {
+    $rootScope.$on('dataGetTasks', () => {
         me.tasks = $data.tasks;
         me.buildTable();
     });
 
-    me.buildTable = () => {
-
-        for (var itDay in me.days) {
-            if (me.days[itDay].getDay()%6) {
-                me.loads[itDay] = 0.0;
+    $rootScope.$on('dataGetDays', () => {
+        me.days = $data.days;
+        if (0 == me.days.length) {
+            var date = new Date(2017,8,1,0,0,0,0); // 1 sept !
+            for (var i=0; i<123; ++i) {
+                me.days.push({
+                    day: new Date(date.getTime() + i*DAY),
+                    load: 0.0,
+                    off: ((new Date(date.getTime() + i*DAY)).getDay()%6) ? false : true,
+                    weekend: ((new Date(date.getTime() + i*DAY)).getDay()%6) ? false : true
+                });
             }
         }
+        me.buildTable();
+    });
 
+    me.buildTable = () => {
+        for (var itDay in me.days) {
+            me.days[itDay].load = 0.0;
+        }
         me.table = new Array(me.tasks.length);
         for (var itTask in me.tasks) {
             var task = me.tasks[itTask];
@@ -39,17 +44,17 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
             for (var itDay in me.days) {
                 me.table[itTask][itDay] = {};
                 var day = me.days[itDay];
-                if (task.start <= day && task.end >= day) {
+                if (task.start <= day.day && task.end >= day.day) {
                     me.table[itTask][itDay].color = me.stringToColor(task.title);
-                    if (day.getDay()%6) {
+                    if (false === day.off) {
                         ++dayNb;
                     }
                 }
             }
             for (var itDay in me.days) {
                 var day = me.days[itDay];
-                if (task.start <= day && task.end >= day && day.getDay()%6) {
-                    me.loads[itDay] += (task.leftTodo / dayNb);
+                if (task.start <= day.day && task.end >= day.day && !day.off) {
+                    me.days[itDay].load += (task.leftTodo / dayNb);
                 }
             }
         }
@@ -72,25 +77,40 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
     me.setDraggedTask = (task, day) => {
         me.draggedTask = task;
         me.draggedDay = day;
-        me.dragStart = (task.start.getTime() == day.getTime());
-        me.dragEnd = (task.end.getTime() == day.getTime());
+        me.dragStart = (task.start.getTime() == day.day.getTime());
+        me.dragEnd = (task.end.getTime() == day.day.getTime());
     }
     me.setDraggedDay = (day) => {
         if (me.dragStart) {
             console.log("drag start");
-            me.draggedTask.start.setTime(day.getTime());
+            if (me.draggedTask.end.getTime() >= day.day.getTime()) {
+                me.draggedTask.start.setTime(day.day.getTime());
+            }
         }
         else if (me.dragEnd) {
             console.log("drag end");
-            me.draggedTask.end.setTime(day.getTime());
+            if (me.draggedTask.start.getTime() <= day.day.getTime()) {
+                me.draggedTask.end.setTime(day.day.getTime());
+            }
         }
         else {
             console.log("drag task");
-            me.draggedTask.start.setTime(me.draggedTask.start.getTime() + day.getTime() - me.draggedDay.getTime());
-            me.draggedTask.end.setTime(me.draggedTask.end.getTime() + day.getTime() - me.draggedDay.getTime());
+            me.draggedTask.start.setTime(me.draggedTask.start.getTime() + day.day.getTime() - me.draggedDay.day.getTime());
+            me.draggedTask.end.setTime(me.draggedTask.end.getTime() + day.day.getTime() - me.draggedDay.day.getTime());
             me.draggedDay = day;
         }
     }
+    me.changeDayOff = (keyDay) => {
+        if (!me.days[keyDay].weekend) {
+            me.days[keyDay].off =! me.days[keyDay].off;
+            me.buildTable();
+        }
+    }
+    // Save task and day list
+    me.save = () => {
+        $data.saveTasks();
+        $data.saveDays();
+    };
 }
 PlanningCtrl.$inject = ["$data", "$timeout", "$rootScope"];
 

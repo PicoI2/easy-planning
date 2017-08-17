@@ -17,3 +17,7 @@ table, th, td {
     width: 14px;
     background-color: grey;
 }
+
+.dayoff {
+    background-color: grey;
+}

@@ -1,19 +1,24 @@
-<h2>Planning :</h2>
 <table>
     <tr>
-        <th class="task-column">Task</th>
-        <th ng-repeat="day in ctrl.days" class="{{!(day.getDay()%6) ? 'we-column' : ''}}"
-            >{{day | date : 'd'}}<br>{{day | date : 'M'}}</th>
+        <th class="task-column">Tasks</th>
+        <th ng-repeat="day in ctrl.days" class="{{!(day.day.getDay()%6) ? 'we-column' : ''}}"
+            >{{day.day | date : 'd'}}<br>{{day.day | date : 'M'}}</th>
     </tr>
     <tr>
         <td>Load</td>
-        <td ng-repeat="load in ctrl.loads track by $index" >{{load | number:2}}</td>
+        <td ng-repeat="(keyDay, day) in ctrl.days"
+            class="{{(day.weekend || day.off) ? 'dayoff' : ''}}"
+            ng-click="ctrl.changeDayOff(keyDay)">
+            <span ng-if="day.load">{{day.load | number:2}}</span>
+        </td>
     </tr>
     <tr ng-repeat="(keyTask, task) in ctrl.tasks">
         <td>{{task.title + " - " + task.leftTodo}}</td>
-        <th ng-repeat="(keyDay, day) in ctrl.days"
+        <td ng-repeat="(keyDay, day) in ctrl.days"
             style="{{ctrl.table[keyTask][keyDay].color}}"
             draggable-task
-            ></th>
+            ></td>
     </tr>
 </table>
+<br>
+<button type="button" ng-click="ctrl.save()">Save</button>

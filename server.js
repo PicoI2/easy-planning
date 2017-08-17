@@ -22,6 +22,10 @@ app.use(express.static('.'));
 var tasks = require("./controllers/tasks");
 app.use('/task', tasks);
 
+// route /day to days controller
+var days = require("./controllers/days");
+app.use('/day', days);
+
 // Function called when others failed
 app.use(function(req, res, next) {
     console.log('404: Page not Found', req.url);
