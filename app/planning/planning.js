@@ -21,11 +21,13 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
         if (0 == me.days.length) {
             var date = new Date(2017,8,1,0,0,0,0); // 1 sept !
             for (var i=0; i<123; ++i) {
+                var newDate = new Date(date.getTime() + i*DAY);
+                newDate.setHours(0,0,0,0);
                 me.days.push({
-                    day: new Date(date.getTime() + i*DAY),
+                    day: newDate,
                     load: 0.0,
-                    off: ((new Date(date.getTime() + i*DAY)).getDay()%6) ? false : true,
-                    weekend: ((new Date(date.getTime() + i*DAY)).getDay()%6) ? false : true
+                    off: (newDate.getDay()%6) ? false : true,
+                    weekend: (newDate.getDay()%6) ? false : true
                 });
             }
         }
@@ -56,6 +58,10 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
                 if (task.start <= day.day && task.end >= day.day && !day.off) {
                     me.days[itDay].load += (task.leftTodo / dayNb);
                 }
+                if (day.weekend ||day.off) day.class = 'dayoff';
+                else if (0.9 > day.load ) day.class = 'underload';
+                else if (1.1 < day.load ) day.class = 'overload';
+                else day.class = 'normalload'
             }
         }
     };
@@ -82,19 +88,16 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
     }
     me.setDraggedDay = (day) => {
         if (me.dragStart) {
-            console.log("drag start");
             if (me.draggedTask.end.getTime() >= day.day.getTime()) {
                 me.draggedTask.start.setTime(day.day.getTime());
             }
         }
         else if (me.dragEnd) {
-            console.log("drag end");
             if (me.draggedTask.start.getTime() <= day.day.getTime()) {
                 me.draggedTask.end.setTime(day.day.getTime());
             }
         }
         else {
-            console.log("drag task");
             me.draggedTask.start.setTime(me.draggedTask.start.getTime() + day.day.getTime() - me.draggedDay.day.getTime());
             me.draggedTask.end.setTime(me.draggedTask.end.getTime() + day.day.getTime() - me.draggedDay.day.getTime());
             me.draggedDay = day;

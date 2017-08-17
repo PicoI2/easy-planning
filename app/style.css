@@ -21,3 +21,13 @@ table, th, td {
 .dayoff {
     background-color: grey;
 }
+
+.underload {
+    background-color: cyan;
+}
+.normalload {
+    background-color: greenyellow;
+}
+.overload {
+    background-color:orange;
+}

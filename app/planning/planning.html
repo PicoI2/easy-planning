@@ -7,13 +7,13 @@
     <tr>
         <td>Load</td>
         <td ng-repeat="(keyDay, day) in ctrl.days"
-            class="{{(day.weekend || day.off) ? 'dayoff' : ''}}"
+            class="{{day.class}}"
             ng-click="ctrl.changeDayOff(keyDay)">
             <span ng-if="day.load">{{day.load | number:2}}</span>
         </td>
     </tr>
     <tr ng-repeat="(keyTask, task) in ctrl.tasks">
-        <td>{{task.title + " - " + task.leftTodo}}</td>
+        <td>{{task.title + " - " + task.leftTodo}} day{{task.leftTodo>1 ? 's' : ''}}</td>
         <td ng-repeat="(keyDay, day) in ctrl.days"
             style="{{ctrl.table[keyTask][keyDay].color}}"
             draggable-task

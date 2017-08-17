@@ -32,6 +32,8 @@ function EditTaskCtrl ($data, $timeout, $rootScope) {
                 var task = me.tasks[taskKey + i];
                 task.title = values[0];
                 task.leftTodo = parseInt(values[1]);
+                task.start = new Date(2017,8,5,0,0,0,0); // 1 sept !
+                task.end = new Date(2017,11,29,0,0,0,0); // 3 sept !
             }
             if (0 == i) {
                 // Memorise the title of the data where data were pasted for later.
@@ -57,8 +59,8 @@ function EditTaskCtrl ($data, $timeout, $rootScope) {
             });
         }
         else {
-            var startDate = new Date(2017,8,1,0,0,0,0); // 1 sept !
-            var endDate = new Date(2017,8,3,0,0,0,0); // 2 sept !
+            var startDate = new Date(2017,8,5,0,0,0,0);
+            var endDate = new Date(2017,11,29,0,0,0,0);
             me.tasks.push({
                 title: '',
                 leftTodo: 3,
@@ -67,6 +69,10 @@ function EditTaskCtrl ($data, $timeout, $rootScope) {
             });
         }
         
+    };
+
+    me.deleteTask = (taskKey) => {
+        me.tasks.splice(taskKey, 1);
     };
 }
 EditTaskCtrl.$inject = ["$data", "$timeout", "$rootScope"];
