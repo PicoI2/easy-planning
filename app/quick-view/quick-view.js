@@ -17,6 +17,10 @@ function QuickViewCtrl ($data, $timeout, $rootScope) {
         me.compute();
     });
 
+    $rootScope.$on('compute', () => {
+        me.compute();
+    });
+
     me.compute = () => {
         me.stats.leftTodo = 0;
         for (var itTask in me.tasks) {

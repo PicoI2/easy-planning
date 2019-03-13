@@ -9,7 +9,7 @@
         <td ng-repeat="(keyDay, day) in ctrl.days"
             class="{{day.class}}"
             ng-click="ctrl.changeDayOff(keyDay)">
-            <span ng-if="day.load">{{day.load | number:2}}</span>
+            <span ng-if="day.load">{{day.load | number:1}}</span>
         </td>
     </tr>
     <tr ng-repeat="(keyTask, task) in ctrl.tasks">

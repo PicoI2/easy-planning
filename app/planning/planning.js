@@ -19,8 +19,8 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
     $rootScope.$on('dataGetDays', () => {
         me.days = $data.days;
         if (0 == me.days.length) {
-            var date = new Date(2017,8,1,0,0,0,0); // 1 sept !
-            for (var i=0; i<123; ++i) {
+            var date = new Date(2019,3,1,0,0,0,0); // 1 april
+            for (var i=0; i<365; ++i) {
                 var newDate = new Date(date.getTime() + i*DAY);
                 newDate.setHours(0,0,0,0);
                 me.days.push({
@@ -59,8 +59,8 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
                     me.days[itDay].load += (task.leftTodo / dayNb);
                 }
                 if (day.weekend ||day.off) day.class = 'dayoff';
-                else if (0.9 > day.load ) day.class = 'underload';
-                else if (1.1 < day.load ) day.class = 'overload';
+                else if (2.5 > day.load ) day.class = 'underload';
+                else if (3.5 < day.load ) day.class = 'overload';
                 else day.class = 'normalload'
             }
         }
@@ -109,6 +109,7 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
         if (!me.days[keyDay].weekend) {
             me.days[keyDay].off =! me.days[keyDay].off;
             me.buildTable();
+            $rootScope.$emit('dataGetDays');
         }
     }
     // Save task and day list
@@ -140,6 +141,7 @@ modulePlanning.directive('draggableTask', () => {
                     scope.ctrl.setDraggedTask(scope.task, scope.day);
                     scope.ctrl.buildTable();
                     scope.$apply();
+                    e.dataTransfer.setData('text/plain', 'dummy');  // Firefox compatibility
                     return false;
                 },
                 false
