@@ -57,6 +57,7 @@ function PlanningCtrl ($data, $timeout, $rootScope) {
                 var day = me.days[itDay];
                 if (task.start <= day.day && task.end >= day.day && !day.off) {
                     me.days[itDay].load += (task.leftTodo / dayNb);
+                    me.table[itTask][itDay].load = (task.leftTodo / dayNb);
                 }
                 if (day.weekend ||day.off) day.class = 'dayoff';
                 else if (2.5 > day.load ) day.class = 'underload';
